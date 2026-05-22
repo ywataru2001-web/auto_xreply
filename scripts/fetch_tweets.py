@@ -4,6 +4,7 @@ import os
 import json
 import time
 import requests
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -53,6 +54,9 @@ def main():
                 if tweet["id"] in processed:
                     continue
                 if tweet["text"].startswith("RT @"):
+                    continue
+                created_at = datetime.strptime(tweet["createdAt"], "%a %b %d %H:%M:%S +0000 %Y").replace(tzinfo=timezone.utc)
+                if datetime.now(timezone.utc) - created_at > timedelta(hours=12):
                     continue
                 results.append({
                     "id": tweet["id"],
